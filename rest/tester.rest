@@ -1,0 +1,24 @@
+### Test
+POST http://localhost:4030/users/register/
+Content-Type: application/json
+
+{
+    "name": "Rakesh Yadav",
+    "email": "rakesh1975@gmail.com",
+    "password": "Mohit123"
+}
+
+### Login
+POST http://localhost:4030/users/login/
+Content-Type: application/json
+
+{
+    "email": "wittymohit@gmail.com",
+    "password": "Mohit123"
+}
+
+### Logout
+GET http://localhost:4030/users/logout/
+
+### Refresh Token
+GET http://localhost:4030/users/refresh_token/
