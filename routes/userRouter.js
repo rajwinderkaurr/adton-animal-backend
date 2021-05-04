@@ -6,5 +6,6 @@ router.post('/login', userController.login)
 router.get('/logout', userController.logout)
 router.get('/refresh_token', userController.refreshToken)
 router.get('/infor', userController.getUser)
+router.get('/adopt_animal', userController.adoptAnimal)
 
 module.exports = router

@@ -40,7 +40,7 @@ const userController = {
             const { email, password } = req.body
 
             const user = await Users.findOne({ email })
-            if (!user) return res.status(400).json({ message: "User withthis email does not exist" })
+            if (!user) return res.status(400).json({ message: "User does not exist" })
 
             const isMatch = await bcrypt.compare(password, user.password)
             if (!isMatch) return res.status(400).json({ message: "Invalid Password" })
@@ -95,6 +95,9 @@ const userController = {
             res.status(500).json({ message: error.message })
         }
     },
+    adoptAnimal = async (req, res) => {
+        
+    }
 }
 
 const createAccessToken = user => {
