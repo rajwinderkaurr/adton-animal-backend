@@ -17,6 +17,10 @@ app.use('/users', require('./routes/userRouter'))
 app.use('/api', require('./routes/animalRouter'))
 app.use('/api', require('./routes/categoryRouter'))
 
+app.get('/', (req, res) => {
+    res.json({ message: "Congrats! Server started. Use the front end to query..." })
+})
+
 mongoose.connect(MONGO_URL, {
     useUnifiedTopology: true,
     useNewUrlParser: true,
