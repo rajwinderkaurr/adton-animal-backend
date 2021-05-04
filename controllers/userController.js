@@ -95,8 +95,8 @@ const userController = {
             res.status(500).json({ message: error.message })
         }
     },
-    adoptAnimal = async (req, res) => {
-        
+    adoptAnimal: async (req, res) => {
+
     }
 }
 
