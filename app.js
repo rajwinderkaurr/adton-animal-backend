@@ -16,6 +16,7 @@ app.use(cookieParser())
 app.use('/users', require('./routes/userRouter'))
 app.use('/api', require('./routes/animalRouter'))
 app.use('/api', require('./routes/categoryRouter'))
+app.use('/api', require('./routes/adoptionRouter'))
 
 app.get('/', (req, res) => {
     res.json({ message: "Congrats! Server started. Use the front end to query..." })

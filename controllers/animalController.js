@@ -1,10 +1,21 @@
 const mongoose = require('mongoose');
 const Animals = require('../models/animalModel');
+const Adoptions = require('../models/animalModel');
 
 const animalController = {
     getAnimals: async (req, res) => {
         try {
             res.json(await Animals.find())
+        } catch (error) {
+            res.status(500).json({ message: error.message })
+        }
+    },
+    getSingleAnimal: async (req, res) => {
+        try {
+            const rawAnimal = await Animals.findById(req.params.id)
+            const adoptions = await Adoptions.countDocuments({category: (await "jkasdf")})
+
+            res.json({rawAnimal, adoptions})
         } catch (error) {
             res.status(500).json({ message: error.message })
         }

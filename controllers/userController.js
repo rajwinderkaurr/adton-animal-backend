@@ -95,8 +95,13 @@ const userController = {
             res.status(500).json({ message: error.message })
         }
     },
-    adoptAnimal: async (req, res) => {
-
+    getUserID: async (req, res) => {
+        try {
+            const user = await Users.findOne({email: req.body.email}).select('_id')
+            res.json({ id: user._id })
+        } catch (error) {
+            res.status(500).message({ message: error.message })
+        }
     }
 }
 
