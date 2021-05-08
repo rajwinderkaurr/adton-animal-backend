@@ -47,7 +47,6 @@ const userController = {
 
             const accessToken = createAccessToken({ id: user._id })
             const refreshToken = createRefreshToken({ id: user._id })
-            // console.log(refreshToken)
 
             res.cookie('refreshtoken', refreshToken, {
                 httpOnly: true,
@@ -95,12 +94,15 @@ const userController = {
             res.status(500).json({ message: error.message })
         }
     },
-    getUserID: async (req, res) => {
+    getSingle: async (req, res) => {
         try {
-            const user = await Users.findOne({email: req.body.email}).select('_id')
-            res.json({ id: user._id })
+            const user = await Users.findById(req.params.id).select('-password -email')
+
+            if (!user) return res.status(400).json({ message: "Cannot find user with the id" })
+
+            res.json({ id: user })
         } catch (error) {
-            res.status(500).message({ message: error.message })
+            res.status(500).json({ message: error.message })
         }
     }
 }

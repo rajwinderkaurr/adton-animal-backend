@@ -1,17 +1,31 @@
 const mongoose = require('mongoose')
 
 const adoptionSchema = new mongoose.Schema({
-    animal_id: {
+    animalId: {
         type: String,
         required: true,
     },
-    requester_id: {
+    requesterId: {
         type: String,
         required: true,
     },
-    allower_id: {
+    allowerId: {
         type: String
     },
+    status: {
+        type: Number,
+        enum: [0, 1, 2], // 0 -> Pending, 1 -> Approved, 2 -> Rejected
+        default: 0
+    },
+    userMessage: {
+        type: String,
+        trim: true,
+        default: ""
+    },
+    allowerMessage: {
+        type: String,
+        trim: true,
+    }
 }, {
     timestamps: true
 })

@@ -8,6 +8,13 @@ const categoryController = {
             res.status(500).json({ message: error.message })
         }
     },
+    getSingle: async (req, res) => {
+        try {
+            res.json(await Categories.findById(req.params.id))
+        } catch (error) {
+            res.status(500).json({ message: error.message })
+        }
+    },
     createCategory: async (req, res) => {
         try {
             const { name } = req.body

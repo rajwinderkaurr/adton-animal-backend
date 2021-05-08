@@ -9,6 +9,7 @@ router.route('/categories')
     .get(categoryController.getCategories)
     .post(auth, adminAuth, categoryController.createCategory)
 router.route('/categories/:id')
+    .get(categoryController.getSingle)
     .put(categoryMiddleware, categoryController.updateCategories)
     .delete(categoryMiddleware, categoryController.deleteCategories)
 

@@ -12,17 +12,40 @@ const animalController = {
     },
     getSingleAnimal: async (req, res) => {
         try {
-            const rawAnimal = await Animals.findById(req.params.id)
-            const adoptions = await Adoptions.countDocuments({category: (await "jkasdf")})
+            const { id } = req.params
+            if (!id || id.length !== 24) return res.status(400).json({ message: "Please provide the correct id" })
+            
+            const rawAnimal = await Animals.findById(id)
 
+            if (!rawAnimal) return res.status(400).json({ message: "Animal with this id does not exist" })
+
+            const adoptions = await Adoptions.countDocuments({animalId: rawAnimal.id})
             res.json({rawAnimal, adoptions})
+        } catch (error) {
+            res.status(500).json({ message: error.message })
+        }
+    },
+    getWithSameCategoryId: async (req, res) => {
+        try {
+            const animals = await Animals.find({category: (await Animals.findById(req.params.id)).category})
+
+            res.json({animals})
+        } catch (error) {
+            res.status(500).json({ message: error.message })
+        }
+    },
+    getWithSameCategoryName: async (req, res) => {
+        try {
+            const animals = await Animals.find({category: req.body.category})
+
+            res.json({animals})
         } catch (error) {
             res.status(500).json({ message: error.message })
         }
     },
     createAnimal: async (req, res) => {
         try {
-            const { name, category, dob: date, description, images, breed  } = req.body
+            const { name, category, dob, description, images, breed  } = req.body
             
             if (!(name && category && dob && description && images && breed))
                 return res.status(400).json({ message: "Please enter all details about the animal" })

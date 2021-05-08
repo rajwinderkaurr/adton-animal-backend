@@ -8,7 +8,13 @@ router.route('/animals')
     .get(animalController.getAnimals) // Get all animals
     .post(auth, adminAuth, animalController.createAnimal) // Create New Animal
 
-router.route('/animals/:id')
+router.route('/animals/same_category_id/:id')
+    .get(animalController.getWithSameCategoryId)
+
+router.route('/animals/same_category_name/')
+    .get(animalController.getWithSameCategoryName)
+
+router.route('/animals/single/:id')
     .get(animalController.getSingleAnimal)
     .put(auth, adminAuth, getAnimal, animalController.updateAnimal) // Update Animal by ID
     .delete(auth, adminAuth, getAnimal, animalController.deleteAnimal) // Delete Animal by ID

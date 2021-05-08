@@ -3,6 +3,7 @@ const mongoose = require('mongoose')
 const cors = require('cors')
 const config = require('./config')
 const cookieParser = require('cookie-parser');
+const fileUpload = require('express-fileupload');
 require('dotenv').config()
 
 const PORT = process.env.PORT || 4030
@@ -13,10 +14,15 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 app.use(cookieParser())
+app.use(fileUpload({
+    useTempFiles: true
+})) 
+
 app.use('/users', require('./routes/userRouter'))
 app.use('/api', require('./routes/animalRouter'))
 app.use('/api', require('./routes/categoryRouter'))
 app.use('/api', require('./routes/adoptionRouter'))
+app.use('/api', require('./routes/uploadRouter'))
 
 app.get('/', (req, res) => {
     res.json({ message: "Congrats! Server started. Use the front end to query..." })
