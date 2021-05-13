@@ -6,7 +6,19 @@ const mailer = require('../utils/mailer')
 const animalController = {
     getAnimals: async (req, res) => {
         try {
-            res.json(await Animals.find())
+            const filters = req.query
+            const animals = await Animals.find()
+            
+            const filteredAnimals = animals.filter(animal => {
+                let isValid = true;
+                for (key in filters) {
+                    console.log(key, animal[key], filters[key], typeof(animal[key]), typeof(filters[key]));
+                    isValid = String(animal[key]) == String(filters[key]);
+                }
+                return isValid;
+            });
+
+            res.json(filteredAnimals)
         } catch (error) {
             res.status(500).json({ message: error.message })
         }

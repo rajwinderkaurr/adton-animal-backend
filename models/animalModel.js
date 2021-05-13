@@ -22,7 +22,7 @@ const animalSchema = new mongoose.Schema({
         length: 5000
     },
     isAdopted: {
-        type: String,
+        type: Boolean,
         default: false
     },
     images: {

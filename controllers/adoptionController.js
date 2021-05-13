@@ -1,16 +1,27 @@
-const mongoose = require('mongoose');
 const Adoptions = require('../models/adoptionModel')
 const Users = require('../models/userModel')
 const Animals = require('../models/animalModel');
-const { request } = require('express');
+const sendMail = require('../utils/mailer')
 
 
 const adoptionController = {
     getAdoptions: async (req, res) => {
         try {
-            adoptions = await Adoptions.find()
+            let adoptions = await Adoptions.find({requesterId: req.user.id})
 
-            res.json(adoptions)
+            const returner = await Promise.all(adoptions.map(async adoption => {
+                const { animalId, requesterId, allowerId } = adoption
+
+                let allower = null
+
+                const animal = await Animals.findById(animalId)
+                const requester = await Users.findById(requesterId).select('-password')
+                if (allowerId) allower = await Users.findById(allowerId).select('-password')
+
+                return {adoption, allower, requester, animal}
+            }))
+
+            res.json(returner)
         } catch (error) {
             res.status(500).json({ message: error.message })
         }
@@ -20,6 +31,27 @@ const adoptionController = {
             adoption = await Adoptions.findById(req.params.id)
 
             res.json(adoption)
+        } catch (error) {
+            res.status(500).json({ message: error.message })
+        }
+    },
+    getPublicAdoptions: async (req, res) => {
+        try {
+            let adoptions = await Adoptions.find()
+
+            const returner = await Promise.all(adoptions.map(async adoption => {
+                const { animalId, requesterId, allowerId } = adoption
+
+                let allower = null
+
+                const animal = await Animals.findById(animalId)
+                const requester = await Users.findById(requesterId).select('-password')
+                if (allowerId) allower = await Users.findById(allowerId).select('-password')
+
+                return {adoption, allower, requester, animal}
+            }))
+
+            res.json(returner)
         } catch (error) {
             res.status(500).json({ message: error.message })
         }
@@ -58,10 +90,20 @@ const adoptionController = {
             const isAdoption = (id.length === 24 && await Adoptions.exists({_id: id}))
             if (!isAdoption || ![0, 1, 2].includes(status)) return res.status(400).json({ message: "Please provide the correct adoptionId or status" })
 
+
             // Update Adoption
             await Adoptions.findByIdAndUpdate(id, { allowerId, status, allowerMessage }, { useFindAndModify: false })
 
+            // Update animal status in its table if adoption status is approved
+            if (status === 1) {
+                await Animals.findOneAndUpdate({_id: (await Adoptions.findById(id)).animalId}, {
+                    isAdopted: true
+                })
+            }
+
             res.json({ message: "Adoption status changed" })
+
+            // updateByMail(id) // Notify recepient by mail
         } catch (error) {
             res.status(500).json({ message: error.message })
         }
@@ -80,6 +122,23 @@ const adoptionController = {
             res.status(500).json({ message: error.message })
         }
     }
+}
+
+const updateByMail = async (adoption_id) => {
+    console.log("Starting lookup")
+    
+    const adoption = await Adoptions.findById(adoption_id)
+    console.log(adoption)
+    const requester = await Users.findById(adoption.requesterId).select('-password')
+    console.log(requester)
+    const allower = await Users.findById(adoption.allowerId).select('-password')
+    console.log(allower)
+
+    const animal = await Animals.findById(adoption.animalId)
+    console.log(animal)
+
+
+    sendMail(requester.email, "ATTN: Changed Status of Animal Adoption", "Changed status of animal adoption", animal.name, (adoption.status === 1? 'Approved!': "Rejected"), allower.name, "http://localhost:3684/")
 }
 
 module.exports = adoptionController

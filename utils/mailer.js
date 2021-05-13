@@ -141,4 +141,6 @@ const sendMail = (to, subject, text, animal, status, by, adoption_link) => {
     })
 }
 
+
+module.exports = sendMail
 // sendMail('www.mohit2004@gmail.com', "ATTN: Changed Status of Animal Adoption", "Changed status of animal adoption", "Cookie Cookinie", "Approved", "Mohit Yadav", "http://localhost:3684/")
