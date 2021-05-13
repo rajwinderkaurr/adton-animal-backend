@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Animals = require('../models/animalModel');
 const Adoptions = require('../models/animalModel');
+const mailer = require('../utils/mailer')
 
 const animalController = {
     getAnimals: async (req, res) => {
