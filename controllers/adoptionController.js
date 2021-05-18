@@ -95,15 +95,13 @@ const adoptionController = {
             await Adoptions.findByIdAndUpdate(id, { allowerId, status, allowerMessage }, { useFindAndModify: false })
 
             // Update animal status in its table if adoption status is approved
-            if (status === 1) {
-                await Animals.findOneAndUpdate({_id: (await Adoptions.findById(id)).animalId}, {
-                    isAdopted: true
-                })
-            }
+            await Animals.findOneAndUpdate({_id: (await Adoptions.findById(id)).animalId}, {
+                isAdopted: (status === 1? true: false)
+            })
 
             res.json({ message: "Adoption status changed" })
 
-            // updateByMail(id) // Notify recepient by mail
+            updateByMail(id) // Notify recepient by mail
         } catch (error) {
             res.status(500).json({ message: error.message })
         }
@@ -125,17 +123,12 @@ const adoptionController = {
 }
 
 const updateByMail = async (adoption_id) => {
-    console.log("Starting lookup")
     
     const adoption = await Adoptions.findById(adoption_id)
-    console.log(adoption)
     const requester = await Users.findById(adoption.requesterId).select('-password')
-    console.log(requester)
     const allower = await Users.findById(adoption.allowerId).select('-password')
-    console.log(allower)
 
     const animal = await Animals.findById(adoption.animalId)
-    console.log(animal)
 
 
     sendMail(requester.email, "ATTN: Changed Status of Animal Adoption", "Changed status of animal adoption", animal.name, (adoption.status === 1? 'Approved!': "Rejected"), allower.name, "http://localhost:3684/")

@@ -134,9 +134,7 @@ const sendMail = (to, subject, text, animal, status, by, adoption_link) => {
     
     transporter.sendMail(mailOptions, function(error, info){
         if (error) {
-            console.log(error);
-        } else {
-            console.log('Email sent: ' + info.response);
+            console.error(error);
         }
     })
 }

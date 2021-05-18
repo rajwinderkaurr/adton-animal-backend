@@ -12,7 +12,6 @@ const animalController = {
             const filteredAnimals = animals.filter(animal => {
                 let isValid = true;
                 for (key in filters) {
-                    console.log(key, animal[key], filters[key], typeof(animal[key]), typeof(filters[key]));
                     isValid = String(animal[key]) == String(filters[key]);
                 }
                 return isValid;
